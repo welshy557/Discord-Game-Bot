@@ -29,3 +29,12 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+task stage(dependsOn: ['build','shadowJar', 'clean', 'test'])
+build.mustRunAfter clean
+build.mustRunAfter test
+
+jar {
+    manifest {
+        attributes 'Class-Path': '/libs/GameBot-1.0.jar', 'Main-Class': 'org.GameBot.BotService'
+    }
+}
