@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Quiz extends ListenerAdapter {
+public class QuizGame extends ListenerAdapter {
 
     private final ArrayList<QuizQuestion> questions = new ArrayList<>();
     private final String userId;
@@ -32,7 +32,7 @@ public class Quiz extends ListenerAdapter {
     private final int numberOfQuestions;
 
     public int correctAnswers = 0;
-    public Quiz(String userId, TextChannel quizChannel, int numberOfQuestions) {
+    public QuizGame(String userId, TextChannel quizChannel, int numberOfQuestions) {
         this.userId = userId;
         this.quizChannel = quizChannel;
         this.currentQuestionNumber = 1;
@@ -52,7 +52,7 @@ public class Quiz extends ListenerAdapter {
 
     }
 
-    public Quiz(String userId) {
+    public QuizGame(String userId) {
         this.userId = userId;
         this.quizChannel = null;
         this.numberOfQuestions = 0;
@@ -185,7 +185,7 @@ public class Quiz extends ListenerAdapter {
                 0,
                 null,
                 null,
-                new MessageEmbed.AuthorInfo("Game Bot", null, null, null),
+                new MessageEmbed.AuthorInfo("Quiz Game", null, null, null),
                 null,
                 null,
                 null,
@@ -205,8 +205,8 @@ public class Quiz extends ListenerAdapter {
             return false;
         }
         if (o.getClass() == this.getClass()) {
-            Quiz quiz = (Quiz) o;
-            return quiz.userId.equals(this.userId);
+            QuizGame quizGame = (QuizGame) o;
+            return quizGame.userId.equals(this.userId);
         }
         return false;
     }

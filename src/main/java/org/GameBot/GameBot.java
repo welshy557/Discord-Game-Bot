@@ -3,9 +3,12 @@ package org.GameBot;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import org.GameBot.commands.QuizCommands;
+import org.GameBot.commands.Guess.GuessCommands;
+import org.GameBot.commands.InitCommands;
+import org.GameBot.commands.Quiz.QuizCommands;
 
 import javax.security.auth.login.LoginException;
 
@@ -22,14 +25,17 @@ public class GameBot {
         } else {
             token = config.get("TOKEN");
         }
-        DefaultShardManagerBuilder builder = net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder.createDefault(token);
+        DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.playing("Games!"));
+        builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
         builder.build();
         shardManager = builder.build();
 
         // Commands
+        shardManager.addEventListener(new InitCommands());
         shardManager.addEventListener(new QuizCommands());
+        shardManager.addEventListener(new GuessCommands());
     }
 
     public ShardManager getShardManager() {
