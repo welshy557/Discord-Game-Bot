@@ -21,7 +21,7 @@ public class GameBot {
 
         String token;
         if (config == null) {
-            token = System.getenv("TOKEN");
+            token = System.getenv().get("TOKEN");
         } else {
             token = config.get("TOKEN");
         }

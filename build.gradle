@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group 'org.GameBot'
@@ -28,4 +29,14 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+task stage(dependsOn: ['build','shadowJar', 'clean', 'test'])
+build.mustRunAfter clean
+build.mustRunAfter test
+
+jar {
+    manifest{
+        attributes 'Class-Path': '/libs/game_bot-1.0-all.jar', 'Main-Class': 'org.GameBot.BotService'
+    }
 }
