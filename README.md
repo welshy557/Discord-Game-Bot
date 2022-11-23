@@ -3,7 +3,7 @@ A discord bot to play a numerous amount of games in.
 
 ## Games:
 
- - Checkers
+ - Connect Four
  - Guess a Number
  - Quiz Game
 ## Commands:
