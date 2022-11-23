@@ -1,6 +1,7 @@
 package org.GameBot.commands;
 
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -28,5 +29,12 @@ public class InitCommands extends ListenerAdapter {
         commandData.add(Commands.slash("close-connect-four", "Close your current guess game").addOption(OptionType.MENTIONABLE, "opponent", "Opponent you played against"));
         // Sending commands to guild
         event.getGuild().updateCommands().addCommands(commandData).queue();
+    }
+
+    @Override
+    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        if (event.getName().equals("help")) {
+            event.reply("https://github.com/welshy557/Discord-Game-Bot/blob/main/README.md");
+        }
     }
 }
