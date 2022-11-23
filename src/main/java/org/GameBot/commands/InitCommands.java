@@ -23,6 +23,9 @@ public class InitCommands extends ListenerAdapter {
         commandData.add(Commands.slash("guess", "Play a guessing game").addOption(OptionType.STRING, "guesses", "The number of guesses allowed"));
         commandData.add(Commands.slash("close-guess", "Close your current guess game"));
 
+        // ConnectFour commands
+        commandData.add(Commands.slash("connect-four", "Play a game of Connect 4 with a friend").addOption(OptionType.MENTIONABLE, "opponent", "Opponent to play against"));
+        commandData.add(Commands.slash("close-connect-four", "Close your current guess game").addOption(OptionType.MENTIONABLE, "opponent", "Opponent you played against"));
         // Sending commands to guild
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
