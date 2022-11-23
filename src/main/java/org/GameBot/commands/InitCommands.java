@@ -38,7 +38,7 @@ public class InitCommands extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("help")) {
-            event.reply("https://github.com/welshy557/Discord-Game-Bot/blob/main/README.md").queue();
+            event.reply("https://github.com/welshy557/Discord-Game-Bot/blob/main/README.md").setEphemeral(true).queue();
         }
     }
 }
