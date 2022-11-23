@@ -28,13 +28,17 @@ public class InitCommands extends ListenerAdapter {
         commandData.add(Commands.slash("connect-four", "Play a game of Connect 4 with a friend").addOption(OptionType.MENTIONABLE, "opponent", "Opponent to play against"));
         commandData.add(Commands.slash("close-connect-four", "Close your current guess game").addOption(OptionType.MENTIONABLE, "opponent", "Opponent you played against"));
         // Sending commands to guild
+
+        // Help command
+        commandData.add(Commands.slash("help", "Link to README"));
+
         event.getGuild().updateCommands().addCommands(commandData).queue();
     }
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("help")) {
-            event.reply("https://github.com/welshy557/Discord-Game-Bot/blob/main/README.md");
+            event.reply("https://github.com/welshy557/Discord-Game-Bot/blob/main/README.md").queue();
         }
     }
 }
