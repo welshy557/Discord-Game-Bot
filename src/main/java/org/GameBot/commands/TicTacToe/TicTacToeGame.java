@@ -1,4 +1,4 @@
-package org.GameBot.commands.ConnectFour;
+package org.GameBot.commands.TicTacToe;
 
 import net.dv8tion.jda.api.entities.EmbedType;
 import net.dv8tion.jda.api.entities.Message;
@@ -13,23 +13,25 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ConnectFourGame extends ListenerAdapter {
-    private static final String EMPTY = ":black_circle:";
-    private static final String USER = ":red_circle:";
-    private static final String OPPONENT = ":yellow_circle:";
+public class TicTacToeGame extends ListenerAdapter {
+    private static final String EMPTY = ":black_large_square:";
+    private static final String USER = ":x:";
+    private static final String OPPONENT = ":o:";
+
     private final User user;
     private final User opponent;
     private final TextChannel gameChannel;
     private User playersTurn;
 
     private Message boardMessage;
-    private Message buttonMessage;
+    private Message buttonsMessageOne;
+    private Message buttonsMessageTwo;
     private boolean isCompleted = false;
     private User winner;
 
 
-    private final String[][] board = new String[6][7];
-    public ConnectFourGame(User user, User opponent, TextChannel gameChannel) {
+    private final String[][] board = new String[3][3];
+    public TicTacToeGame(User user, User opponent, TextChannel gameChannel) {
         this.user = user;
         this.gameChannel = gameChannel;
         this.opponent = opponent;
@@ -37,28 +39,35 @@ public class ConnectFourGame extends ListenerAdapter {
 
         // Make empty board
         for (String[] row : this.board) {
-            Arrays.fill(row, ConnectFourGame.EMPTY);
+            Arrays.fill(row, TicTacToeGame.EMPTY);
         }
 
 
         // Create Buttons
         ArrayList<Button> buttonsOne = new ArrayList<>();
-        buttonsOne.add(Button.primary("0", "1"));
-        buttonsOne.add(Button.primary("1", "2"));
-        buttonsOne.add(Button.primary("2", "3"));
-        buttonsOne.add(Button.primary("3", "4"));
+
+        // column, row
+        buttonsOne.add(Button.primary("0,0", "1"));
+        buttonsOne.add(Button.primary("0,1", "2"));
+        buttonsOne.add(Button.primary("0,2", "3"));
 
         ArrayList<Button> buttonsTwo = new ArrayList<>();
-        buttonsTwo.add(Button.primary("4", "5"));
-        buttonsTwo.add(Button.primary("5", "6"));
-        buttonsTwo.add(Button.primary("6", "7"));
+        buttonsTwo.add(Button.primary("1,0", "4"));
+        buttonsTwo.add(Button.primary("1,1", "5"));
+        buttonsTwo.add(Button.primary("1,2", "6"));
+
+        ArrayList<Button> buttonsThree = new ArrayList<>();
+        buttonsThree.add(Button.primary("2,0", "7"));
+        buttonsThree.add(Button.primary("2,1", "8"));
+        buttonsThree.add(Button.primary("2,2", "9"));
 
         // Draw Board Emojis
         gameChannel.sendMessageEmbeds(drawBoard()).addActionRow(buttonsOne).queue(boardMessage -> this.boardMessage = boardMessage);
-        gameChannel.sendMessage("").addActionRow(buttonsTwo).queue(buttonMessage -> this.buttonMessage = buttonMessage);
+        gameChannel.sendMessage("").addActionRow(buttonsTwo).queue(buttonsMessageOne -> this.buttonsMessageOne = buttonsMessageOne);
+        gameChannel.sendMessage("").addActionRow(buttonsThree).queue(buttonsMessageTwo -> this.buttonsMessageTwo = buttonsMessageTwo);
     }
 
-    public ConnectFourGame(User user, User opponent) {
+    public TicTacToeGame(User user, User opponent) {
         this.user = user;
         this.opponent = opponent;
         this.gameChannel = null;
@@ -67,62 +76,60 @@ public class ConnectFourGame extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getUser().getId().equals(this.playersTurn.getId()) &&
-            (event.getMessage().getId().equals(this.boardMessage.getId()) || event.getMessage().getId().equals(this.buttonMessage.getId())) &&
-            !isCompleted
-            )
-        {
+        if (event.getUser().getId().equals(this.playersTurn.getId())
+            && (event.getMessage().getId().equals(this.boardMessage.getId())
+                    || event.getMessage().getId().equals(this.buttonsMessageOne.getId())
+                    || event.getMessage().getId().equals(this.buttonsMessageTwo.getId()))
+            && !isCompleted
+        )
+         {
             this.playersTurn = event.getUser().getId().equals(this.user.getId()) ?
                     this.opponent : this.user;
 
-            addBoardPiece(event, Integer.parseInt(event.getButton().getId()), 5);
-
-
+            String[] movePosition = event.getButton().getId().split(",");
+            int column = Integer.parseInt(movePosition[1]);
+            int row = Integer.parseInt(movePosition[0]);
+            makeMove(event, column, row);
 
             if (this.isCompleted) {
-                event.reply(this.winner.getAsMention() + " won!\nEnter /close-connect-four to close the channel").queue();
+                event.reply((this.winner == null ? "Tie Game" : this.winner.getAsMention() + " Won!") + "\nEnter /close-tic-tac-toe to close the channel").queue();
             } else {
-                event.reply("Successful Move").setEphemeral(true).queue();
+                event.reply("Successful Play").setEphemeral(true).queue();
             }
 
         } else if (isCompleted) {
-            event.reply("Game is over.\nEnter /close-connect-four to close the channel").setEphemeral(true).queue();
+            event.reply("Game is over.\nEnter /close-tic-tac-toe to close the channel").setEphemeral(true).queue();
         } else {
             event.reply("Not your turn!").setEphemeral(true).queue();
 
         }
     }
 
-
-    private void addBoardPiece(ButtonInteractionEvent event, int column, int row) {
-
-        if (row == -1) {
-            event.reply("Column is Full").setEphemeral(true).queue();
-            return;
-        }
-        if (this.board[row][column].equals(ConnectFourGame.EMPTY)) {
+    private void makeMove(ButtonInteractionEvent event, int column, int row) {
+        if (this.board[row][column].equals(TicTacToeGame.EMPTY)) {
 
             this.board[row][column] = event.getUser().getId().equals(this.user.getId()) ?
-                    ConnectFourGame.USER : ConnectFourGame.OPPONENT;
+                    TicTacToeGame.USER : TicTacToeGame.OPPONENT;
 
             if (isWinner()) {
                 this.isCompleted = true;
                 this.winner = this.playersTurn.getId().equals(this.user.getId()) ? this.opponent : this.user;
             }
 
+            if (isDraw()) {
+                this.isCompleted = true;
+                this.winner = null;
+            }
+
             this.boardMessage.editMessageEmbeds(drawBoard()).queue();
-
-            return; // End recursive loop
         }
-
-        addBoardPiece(event, column, row - 1);
     }
 
     private boolean isWinner() {
         for (int i = 0; i < this.board.length; i++) {
             for (int j = 0; j < this.board[i].length; j++) {
-                String color = this.board[i][j];
-                if (!color.equals(ConnectFourGame.EMPTY) && isFourInRow(i, j, this.board[i][j])) {
+                String letter = this.board[i][j];
+                if (!letter.equals(TicTacToeGame.EMPTY) && isThreeInRow(i, j, this.board[i][j])) {
                     return true;
                 }
             }
@@ -130,10 +137,22 @@ public class ConnectFourGame extends ListenerAdapter {
         return false;
     }
 
-    private boolean isFourInRow(int row, int column, String color) {
+    private boolean isDraw() {
+        int count = 0;
+        for (String[] row : this.board) {
+            for (String letter : row) {
+                if (!letter.equals(TicTacToeGame.EMPTY)) {
+                    count++;
+                }
+            }
+        }
+        return count == 9;
+    }
+
+    private boolean isThreeInRow(int row, int column, String color) {
         int rightCount = 0;
         int rightColumn = column;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             if (rightColumn + 1 < this.board.length && color.equals(this.board[row][rightColumn + 1])) {
                 rightCount += 1;
             }
@@ -142,7 +161,7 @@ public class ConnectFourGame extends ListenerAdapter {
         int topRightCount = 0;
         int topRightColumn = column;
         int topRightRow = row;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             if (topRightRow - 1 >= 0 && topRightColumn + 1 < this.board.length && color.equals(this.board[topRightRow - 1][topRightColumn + 1])) {
                 topRightCount += 1;
             }
@@ -152,7 +171,7 @@ public class ConnectFourGame extends ListenerAdapter {
 
         int topCount = 0;
         int topRow = row;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             if (topRow - 1 >= 0 && color.equals(this.board[topRow - 1][column])) {
                 topCount += 1;
             }
@@ -162,7 +181,7 @@ public class ConnectFourGame extends ListenerAdapter {
         int topLeftCount = 0;
         int topLeftColumn = column;
         int topLeftRow = row;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             if (topLeftRow - 1 >= 0 && topLeftColumn - 1 >= 0 && color.equals(this.board[topLeftRow - 1][topLeftColumn - 1])) {
                 topLeftCount += 1;
             }
@@ -172,37 +191,35 @@ public class ConnectFourGame extends ListenerAdapter {
 
         int leftCount = 0;
         int leftColumn = column;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
             if (leftColumn - 1 >= 0 && color.equals(this.board[row][leftColumn - 1])) {
                 leftCount += 1;
             }
             leftColumn--;
         }
 
-        return rightCount == 3 || topRightCount == 3 || topCount == 3 || topLeftCount == 3 || leftCount == 3;
+        return rightCount == 2 || topRightCount == 2 || topCount == 2 || topLeftCount == 2 || leftCount == 2;
     }
-
-
     private MessageEmbed drawBoard() {
         ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
         for (String[] row: this.board) {
-            StringBuilder circles = new StringBuilder();
+            StringBuilder letters = new StringBuilder();
             for (int i = 0; i < row.length; i++) {
                 if (i == row.length - 1) {
-                    circles.append(row[i]);
+                    letters.append(row[i]);
                 } else {
-                    circles.append(row[i]).append(" ");
+                    letters.append(row[i]).append("\t");
                 }
 
             }
 
-            fields.add(new MessageEmbed.Field("", circles.toString(), false));
+            fields.add(new MessageEmbed.Field("", letters.toString(), false));
         }
 
         return new MessageEmbed(
                 null,
-                "Connect 4",
-                 this.isCompleted ? this.winner.getAsMention() + " Won!"  : this.playersTurn.getAsMention() + "'s turn",
+                "Tic Tac Toe",
+                this.isCompleted ? (this.winner == null ? "Tie Game!" : this.winner.getAsMention() + " Won!") : this.playersTurn.getAsMention() + "'s turn" ,
                 EmbedType.RICH,
                 OffsetDateTime.now(),
                 0,
@@ -229,10 +246,11 @@ public class ConnectFourGame extends ListenerAdapter {
             return false;
         }
         if (o.getClass() == this.getClass()) {
-            ConnectFourGame connectFourGame = (ConnectFourGame) o;
-            return connectFourGame.user.getId().equals(this.user.getId()) && connectFourGame.opponent.getId().equals(this.opponent.getId());
+            TicTacToeGame ticTacToeGame = (TicTacToeGame) o;
+            return ticTacToeGame.user.getId().equals(this.user.getId()) && ticTacToeGame.opponent.getId().equals(this.opponent.getId());
         }
         return false;
     }
 
 }
+

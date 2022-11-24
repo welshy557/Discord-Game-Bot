@@ -7,9 +7,11 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.GameBot.commands.ConnectFour.ConnectFourCommands;
+import org.GameBot.commands.ConnectFour.ConnectFourGame;
 import org.GameBot.commands.Guess.GuessCommands;
 import org.GameBot.commands.InitCommands;
 import org.GameBot.commands.Quiz.QuizCommands;
+import org.GameBot.commands.TicTacToe.TicTacToeCommands;
 
 import javax.security.auth.login.LoginException;
 
@@ -34,10 +36,14 @@ public class GameBot {
         shardManager = builder.build();
 
         // Commands
-        shardManager.addEventListener(new InitCommands());
-        shardManager.addEventListener(new QuizCommands());
-        shardManager.addEventListener(new GuessCommands());
-        shardManager.addEventListener(new ConnectFourCommands());
+        shardManager.addEventListener(
+                new InitCommands(),
+                new QuizCommands(),
+                new GuessCommands(),
+                new ConnectFourCommands(),
+                new TicTacToeCommands()
+        );
+
     }
 
     public ShardManager getShardManager() {

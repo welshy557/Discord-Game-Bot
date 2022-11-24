@@ -69,10 +69,10 @@ public class ConnectFourCommands extends ListenerAdapter {
                 .addPermissionOverride(event.getGuild().getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL))
                 .setParent(category)
                 .queue(channel -> {
-                    ConnectFourGame guessGame;
-                    guessGame = new ConnectFourGame(event.getUser(), event.getOption("opponent").getAsUser(), channel);
-                    channel.getJDA().addEventListener(guessGame);
-                    this.connectFourGames.add(guessGame);
+                    ConnectFourGame connectFourGame;
+                    connectFourGame = new ConnectFourGame(event.getUser(), event.getOption("opponent").getAsUser(), channel);
+                    channel.getJDA().addEventListener(connectFourGame);
+                    this.connectFourGames.add(connectFourGame);
                     event.reply("Started Connect 4 Game. Play here: <#" + channel.getId() + ">").setEphemeral(true).queue();
                     event.getOption("opponent").getAsUser().openPrivateChannel()
                             .queue(dm -> dm.sendMessage(String.format("<@%d> has invited you to play Connect 4 in %s", event.getUser().getIdLong(), event.getGuild().getName())).queue());
