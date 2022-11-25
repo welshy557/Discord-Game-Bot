@@ -10,6 +10,7 @@ Invite bot to your Discord server: https://discord.com/oauth2/authorize?client_i
 ## Games:
 
  - Connect Four
+ - Tic Tac Toe
  - Guess a Number
  - Quiz Game
 ## Commands:
@@ -19,6 +20,9 @@ Invite bot to your Discord server: https://discord.com/oauth2/authorize?client_i
  - /guess number - Starts a Guess a Number game with number amount of tries
  - /close-guess - Closses guess a number game
  - /quiz number - Starts a Quiz Game with number amount of questions
+ - /close-quiz - Closes open quiz game
+ - /tic-tac-toe @opponent - Starts a Tic Tac Toe game with @opponent
+ - /close-tic-tac-toe @opponent - Ends a Tic Tac Toe game with @opponent (Must be host of game)
 
 ## Local Setup:
 
