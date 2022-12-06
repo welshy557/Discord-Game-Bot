@@ -1,0 +1,6 @@
+services:
+  bot:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - TOKEN=$TOKEN

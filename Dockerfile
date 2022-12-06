@@ -7,7 +7,9 @@ FROM openjdk:17-jdk-slim
 
 EXPOSE 8080
 
-ENV TOKEN=MTA0NDM5MzYxOTU0NjcyMjQzNA.GdXNAu.1xzctEV4MYbjtl1fKSWVOh2ALHC_NPWO__Ai7M
+ARG TOKEN
+
+ENV TOKEN ${TOKEN?tokenNotSet}
 
 RUN mkdir /app
 
