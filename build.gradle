@@ -30,12 +30,13 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-task stage(dependsOn: ['build', 'shadowJar', 'clean', 'test'])
-build.mustRunAfter clean
-build.mustRunAfter test
 
-jar {
-    manifest {
-        attributes 'Class-Path': '/libs/GameBot-1.0-all.jar', 'Main-Class': 'org.GameBot.BotService'
+task buildFatJar(type: Jar) {
+        manifest {
+        attributes 'Class-Path': '/libs/GameBot-1.0.jar', 'Main-Class': 'org.GameBot.BotService'
     }
+    baseName = 'GameBot'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
 }
