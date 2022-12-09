@@ -13,6 +13,7 @@ Invite bot to your Discord server: https://discord.com/oauth2/authorize?client_i
  - Tic Tac Toe
  - Guess a Number
  - Quiz Game
+ - Rock Paper Scissors
 ## Commands:
  - /help - Brings you here
  - /connect-four @opponent - Starts a connect four game with @opponent
@@ -23,6 +24,7 @@ Invite bot to your Discord server: https://discord.com/oauth2/authorize?client_i
  - /close-quiz - Closes open quiz game
  - /tic-tac-toe @opponent - Starts a Tic Tac Toe game with @opponent
  - /close-tic-tac-toe @opponent - Ends a Tic Tac Toe game with @opponent (Must be host of game)
+ - /rock-paper-scissors @opponent - Starts a game of Rock Paper Scissors with @opponent
 
 ## Local Setup:
 
