@@ -31,6 +31,7 @@ public class TicTacToeGame extends ListenerAdapter {
 
 
     private final String[][] board = new String[3][3];
+
     public TicTacToeGame(User user, User opponent, TextChannel gameChannel) {
         this.user = user;
         this.gameChannel = gameChannel;
@@ -76,32 +77,33 @@ public class TicTacToeGame extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getUser().getId().equals(this.playersTurn.getId())
-            && (event.getMessage().getId().equals(this.boardMessage.getId())
-                    || event.getMessage().getId().equals(this.buttonsMessageOne.getId())
-                    || event.getMessage().getId().equals(this.buttonsMessageTwo.getId()))
-            && !isCompleted
-        )
-         {
-            this.playersTurn = event.getUser().getId().equals(this.user.getId()) ?
-                    this.opponent : this.user;
+        if ((event.getMessage().getIdLong() == this.boardMessage.getIdLong()
+                || event.getMessage().getIdLong() == this.buttonsMessageOne.getIdLong()
+                || event.getMessage().getIdLong() == this.buttonsMessageTwo.getIdLong())
+            && event.getChannel().getIdLong() == this.gameChannel.getIdLong()
+        ) {
 
-            String[] movePosition = event.getButton().getId().split(",");
-            int column = Integer.parseInt(movePosition[1]);
-            int row = Integer.parseInt(movePosition[0]);
-            makeMove(event, column, row);
+            if (event.getUser().getId().equals(this.playersTurn.getId()) && !isCompleted) {
+                this.playersTurn = event.getUser().getId().equals(this.user.getId()) ?
+                        this.opponent : this.user;
 
-            if (this.isCompleted) {
-                event.reply((this.winner == null ? "Tie Game" : this.winner.getAsMention() + " Won!") + "\nEnter /close-tic-tac-toe to close the channel").queue();
+                String[] movePosition = event.getButton().getId().split(",");
+                int column = Integer.parseInt(movePosition[1]);
+                int row = Integer.parseInt(movePosition[0]);
+                makeMove(event, column, row);
+
+                if (this.isCompleted) {
+                    event.reply((this.winner == null ? "Tie Game" : this.winner.getAsMention() + " Won!") + "\nEnter /close-tic-tac-toe to close the channel").queue();
+                } else {
+                    event.reply("Successful Play").setEphemeral(true).queue();
+                }
+
+            } else if (isCompleted) {
+                event.reply("Game is over.\nEnter /close-tic-tac-toe to close the channel").setEphemeral(true).queue();
             } else {
-                event.reply("Successful Play").setEphemeral(true).queue();
+                event.reply("Not your turn!").setEphemeral(true).queue();
+
             }
-
-        } else if (isCompleted) {
-            event.reply("Game is over.\nEnter /close-tic-tac-toe to close the channel").setEphemeral(true).queue();
-        } else {
-            event.reply("Not your turn!").setEphemeral(true).queue();
-
         }
     }
 
@@ -200,9 +202,10 @@ public class TicTacToeGame extends ListenerAdapter {
 
         return rightCount == 2 || topRightCount == 2 || topCount == 2 || topLeftCount == 2 || leftCount == 2;
     }
+
     private MessageEmbed drawBoard() {
         ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
-        for (String[] row: this.board) {
+        for (String[] row : this.board) {
             StringBuilder letters = new StringBuilder();
             for (int i = 0; i < row.length; i++) {
                 if (i == row.length - 1) {
@@ -219,7 +222,7 @@ public class TicTacToeGame extends ListenerAdapter {
         return new MessageEmbed(
                 null,
                 "Tic Tac Toe",
-                this.isCompleted ? (this.winner == null ? "Tie Game!" : this.winner.getAsMention() + " Won!") : this.playersTurn.getAsMention() + "'s turn" ,
+                this.isCompleted ? (this.winner == null ? "Tie Game!" : this.winner.getAsMention() + " Won!") : this.playersTurn.getAsMention() + "'s turn",
                 EmbedType.RICH,
                 OffsetDateTime.now(),
                 0,

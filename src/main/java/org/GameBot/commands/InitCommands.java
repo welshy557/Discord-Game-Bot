@@ -32,6 +32,9 @@ public class InitCommands extends ListenerAdapter {
         commandData.add(Commands.slash("tic-tac-toe", "Play a game of Tic Tac Toe with a friend").addOption(OptionType.MENTIONABLE, "opponent", "Opponent to play against"));
         commandData.add(Commands.slash("close-tic-tac-toe", "Close your current Tic Tac Toe game").addOption(OptionType.MENTIONABLE, "opponent", "Opponent you played against"));
 
+        // Rock Paper Scissors Command
+        commandData.add(Commands.slash("rock-paper-scissors", "Play a game of Rock Paper Scissors with a friend").addOption(OptionType.MENTIONABLE, "opponent", "Opponent to play against"));
+
         // Help command
         commandData.add(Commands.slash("help", "Link to README"));
     }

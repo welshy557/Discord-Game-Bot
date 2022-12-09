@@ -67,30 +67,30 @@ public class ConnectFourGame extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {
-        if (event.getUser().getId().equals(this.playersTurn.getId()) &&
-            (event.getMessage().getId().equals(this.boardMessage.getId()) || event.getMessage().getId().equals(this.buttonMessage.getId())) &&
-            !isCompleted
-            )
-        {
-            this.playersTurn = event.getUser().getId().equals(this.user.getId()) ?
-                    this.opponent : this.user;
+        if ((event.getMessage().getIdLong() == this.boardMessage.getIdLong() || event.getMessage().getIdLong() == this.buttonMessage.getIdLong()) &&
+                event.getChannel().getIdLong() == this.gameChannel.getIdLong()
+        ) {
+            if (event.getUser().getId().equals(this.playersTurn.getId()) && !isCompleted) {
+                this.playersTurn = event.getUser().getId().equals(this.user.getId()) ?
+                        this.opponent : this.user;
 
-            addBoardPiece(event, Integer.parseInt(event.getButton().getId()), 5);
-
+                addBoardPiece(event, Integer.parseInt(event.getButton().getId()), 5);
 
 
-            if (this.isCompleted) {
-                event.reply(this.winner.getAsMention() + " won!\nEnter /close-connect-four to close the channel").queue();
+                if (this.isCompleted) {
+                    event.reply(this.winner.getAsMention() + " won!\nEnter /close-connect-four to close the channel").queue();
+                } else {
+                    event.reply("Successful Move").setEphemeral(true).queue();
+                }
+
+            } else if (isCompleted) {
+                event.reply("Game is over.\nEnter /close-connect-four to close the channel").setEphemeral(true).queue();
             } else {
-                event.reply("Successful Move").setEphemeral(true).queue();
+                event.reply("Not your turn!").setEphemeral(true).queue();
             }
-
-        } else if (isCompleted) {
-            event.reply("Game is over.\nEnter /close-connect-four to close the channel").setEphemeral(true).queue();
-        } else {
-            event.reply("Not your turn!").setEphemeral(true).queue();
-
         }
+
+
     }
 
 
