@@ -29,7 +29,7 @@ public class GameBot {
         }
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
         builder.setStatus(OnlineStatus.ONLINE);
-        builder.setActivity(Activity.playing("Playing Games!"));
+        builder.setActivity(Activity.playing("Games!"));
         builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
         builder.build();
         ShardManager shardManager = builder.build();
@@ -52,7 +52,7 @@ public class GameBot {
             public void run() {
                 int guildCount = shardManager.getGuilds().size();
                 if (guildCount != prevGuildCount) {
-                    shardManager.setActivity(Activity.playing(String.format("Playing Games in %d Servers!", guildCount)));
+                    shardManager.setActivity(Activity.playing(String.format("Games in %d Servers!", guildCount)));
                 }
             }
         }, 1000 * 60, 1000 * 60);
