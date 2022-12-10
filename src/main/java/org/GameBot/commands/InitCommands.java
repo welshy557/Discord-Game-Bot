@@ -1,16 +1,16 @@
 package org.GameBot.commands;
 
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class InitCommands extends ListenerAdapter {
     List<CommandData> commandData = new ArrayList<>();
@@ -38,31 +38,37 @@ public class InitCommands extends ListenerAdapter {
         // Help command
         commandData.add(Commands.slash("help", "Link to README"));
     }
-    @Override
-    public void onGuildReady(@NotNull GuildReadyEvent event) {
-        // If in dev env
-        if (System.getenv().get("TOKEN") == null) {
-            System.out.println("DEVELOPMENT");
-            // Sending commands to guild
-            event.getGuild().updateCommands().addCommands(commandData).queue();
-        }
-    }
+//    @Override
+//    public void onGuildReady(@NotNull GuildReadyEvent event) {
+//        // If in dev env
+//        if (System.getenv().get("TOKEN") == null) {
+//            System.out.println("DEVELOPMENT");
+//            // Sending commands to guild
+//            event.getGuild().updateCommands().addCommands(commandData).queue();
+//        }
+//    }
 
     @Override
     public void onReady(ReadyEvent event) {
-        // If in production env
-        if (System.getenv().get("TOKEN") != null) {
-            System.out.println("PRODUCTION");
-            // Sending commands to guild
-            event.getJDA().updateCommands().addCommands(commandData).queue();
-        }
-
+//        // If in production env
+//        if (System.getenv().get("TOKEN") != null) {
+//            System.out.println("PRODUCTION");
+//            // Sending commands to guild
+//            event.getJDA().updateCommands().addCommands(commandData).queue();
+//        }
+        event.getJDA().updateCommands().addCommands(commandData).queue();
     }
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equals("help")) {
             event.reply("https://github.com/welshy557/Discord-Game-Bot/blob/main/README.md").setEphemeral(true).queue();
+            return;
         }
+        event.getGuild().retrieveMemberById("1044393619546722434").queue(bot -> {
+            if (!bot.hasPermission(Permission.MANAGE_CHANNEL)) {
+                event.reply("I need the ability to manage channels to play games!").setEphemeral(true).queue();
+            }
+        });
     }
 }
