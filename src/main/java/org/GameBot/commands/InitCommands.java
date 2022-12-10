@@ -51,8 +51,6 @@ public class InitCommands extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         // If in production env
         if (System.getenv().get("TOKEN") != null) {
-            List<CommandData> commandData = new ArrayList<>();
-
             // Sending commands to guild
             event.getJDA().updateCommands().addCommands(commandData).queue();
         }
