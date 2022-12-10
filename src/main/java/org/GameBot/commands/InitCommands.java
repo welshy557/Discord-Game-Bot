@@ -42,6 +42,7 @@ public class InitCommands extends ListenerAdapter {
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         // If in dev env
         if (System.getenv().get("TOKEN") == null) {
+            System.out.println("DEVELOPMENT");
             // Sending commands to guild
             event.getGuild().updateCommands().addCommands(commandData).queue();
         }
@@ -51,6 +52,7 @@ public class InitCommands extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         // If in production env
         if (System.getenv().get("TOKEN") != null) {
+            System.out.println("PRODUCTION");
             // Sending commands to guild
             event.getJDA().updateCommands().addCommands(commandData).queue();
         }
