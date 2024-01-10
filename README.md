@@ -3,10 +3,6 @@ A discord bot to play a numerous amount of games in.
 
 Created with JDA: https://github.com/DV8FromTheWorld/JDA
 
-Hosted at www.mogenius.com
-
-Invite bot to your Discord server: https://discord.com/oauth2/authorize?client_id=1044393619546722434&scope=bot&permissions=8
-
 ## Games:
 
  - Connect Four
